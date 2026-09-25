@@ -73,20 +73,6 @@ datos_excel_listo <- datos_excel %>%
   slice(-(1:2))
 
 
-
-
-
-
-# # 2.4 Transformar los datos a PARQUET -----------------------------------
-
-
-
-#guardado en data/raw
-write_parquet(datos_excel_listo, "data/raw/datos.etica.parquet")
-
-
-
-
 # 3. Guardar EXCEL como Rdata como respaldo -------------------------------
 
 #se guarda en RAW ya que no se han filtrado las filas

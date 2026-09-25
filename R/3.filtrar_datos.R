@@ -1,20 +1,22 @@
 
 
-# 1. Cargar datos PARQUET -----------------------------------------------------
+# 1. Cargar datos ---------------------------------------------------------
 
-#no asustarse porque los datos quedan en memoria como
-#<Object containing active binding>
-datos_etica_parquet <- open_dataset("data/raw/datos.etica.parquet")
 
+
+
+load("data/raw/datos_excel_listo_respaldo.Rdata")
 
 
 
 
 # 2. Filtrar datos --------------------------------------------------------
 
+#Conocer columnas
 
+names(datos_excel_listo)
 
-#Se filtrarán los datos para hospitales
+#Se filtrarán los datos para hospitales de la columna "TipoEstablecimiento" 
 
 #1. Alta complejidad
 #2. Mediana comlejidad
@@ -25,14 +27,7 @@ datos_etica_parquet <- open_dataset("data/raw/datos.etica.parquet")
 # # 2.1 Conocer valores unicos de columna "TipoEstablecimiento"------------
 
 
-valores_unicos <- datos_etica_parquet %>%
-  distinct(TipoEstablecimiento) %>%
-  collect() %>%
-  pull(TipoEstablecimiento)
-
-# Ver el resultado
-print(valores_unicos)
-
+unique(datos_excel_listo$TipoEstablecimiento)
 
 
 # # 2.2 Copiar el dato de hospital para filtar ----------------------------
@@ -56,7 +51,35 @@ categorias_deseadas <- c(
 )
 
 # Filtra y escribe directo da data/clean
-datos_etica_parquet %>%
-  filter(TipoEstablecimiento %in% categorias_deseadas) %>%
-  write_parquet("data/clean/datos_etica_filtrados.parquet")
+
+
+datos_etica_analisis <- datos_excel_listo %>% 
+  filter(TipoEstablecimiento %in% categorias_deseadas)
+
+
+
+
+
+# 3. Guardar datos --------------------------------------------------------
+
+
+
+save(datos_etica_analisis, file = "data/clean/datos_etica_analisis.Rdata")
+
+
+
+# 4. Limpiar entorno ------------------------------------------------------
+
+
+
+rm(list = ls()) # limpiar completamente el entorno global environment
+gc() # limpiar la memoria virtual utilizada por R
+#rm() # limpiar un objeto específico
+
+
+
+
+
+
+ 
 
