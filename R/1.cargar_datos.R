@@ -3,9 +3,16 @@
 
 
 
-
+#datos de comitpe de bioética
 datos_excel<-read_excel("data/raw/comites_bioetica_samuel_140926.xlsx")
 
+
+
+
+
+
+#datos de tipologpia de análisis
+datos_tipologias<-read_excel("data/raw/perfiles_base.xlsx")
 
 
 
@@ -14,8 +21,8 @@ datos_excel<-read_excel("data/raw/comites_bioetica_samuel_140926.xlsx")
 
 
 
-save(datos_excel, file = "data/raw/datos_excel.Rdata")
-
+save(datos_excel, datos_tipologias, file = "data/raw/datos_excel.Rdata")
+save(datos_tipologias, file = "data/clean/datos_tipologias_cea_cec.Rdata")
 
 
 

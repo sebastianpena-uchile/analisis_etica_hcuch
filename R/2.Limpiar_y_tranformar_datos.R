@@ -10,7 +10,7 @@ load("data/raw/datos_excel.Rdata")
 
 
 
-# 2. Limpiar --------------------------------------------------------------
+# 2. Limpiar datos excel comités--------------------------------------------
 
 
 
@@ -73,14 +73,62 @@ datos_excel_listo <- datos_excel %>%
   slice(-(1:2))
 
 
+
+
+
+# # 2.4 Limpiar datos -----------------------------------------------------
+
+
+#eliminar asteriscos (sa = sin asterisco)
+datos_excel_listo_sa <- datos_excel_listo |> 
+  filter(if_all(everything(), ~ !replace_na(str_detect(as.character(.), fixed("*")), FALSE)))
+
+
+# # 2.5 Convertir datos a nuero -------------------------------------------
+
+datos_excel_listo_sa_numerico <- datos_excel_listo_sa |> 
+  mutate(across(
+    c(starts_with("CEA"), starts_with("CEC")),
+    ~ case_when(
+      str_to_lower(str_trim(.)) %in% c("si", "sí", "1") ~ 1,
+      str_to_lower(str_trim(.)) %in% c("no", "0")       ~ 0,
+      TRUE ~ NA_real_ # Conserva NA si hay celdas vacías (o pon 0 si prefieres imputar)
+    )
+  ))
+
+
+
+
+# 3. Dividir datos ---------------------------------------------------------
+
+
+#se dividen los datos entre distintos comites
+
+
+
+#Solo CEA
+datos_excel_listo_CEA_sa_numerico <- datos_excel_listo_sa_numerico |> 
+  select(!starts_with("CEC"))
+
+#Solo CEC
+datos_excel_listo_CEC_sa_numerico <- datos_excel_listo_sa_numerico |> 
+  select(!starts_with("CEA"))
+
+
+
+
+
+
+
+
 # 3. Guardar EXCEL como Rdata como respaldo -------------------------------
 
 #se guarda en RAW ya que no se han filtrado las filas
 
 
 
-save(datos_excel_listo, file = "data/raw/datos_excel_listo_respaldo.Rdata")
-
+save(datos_excel_listo_sa_numerico, file = "data/raw/datos_excel_listo_respaldo.Rdata")
+save(datos_excel_listo_CEC_sa_numerico, datos_excel_listo_CEA_sa_numerico, file = "data/raw/datos_CEA_CEC_separados.Rdata")
 
 
 
